@@ -78,6 +78,8 @@ public class TrackFeatureBuilder : MonoBehaviour
             position = center + rotation * (Vector3.forward * (segmentLength * 0.5f));
             position.y = height;
         }
+
+        StaticBatchingUtility.Combine(root);
     }
 
     private void AddRoadLine(Transform parent, Vector3 position, Quaternion rotation, Material material)
