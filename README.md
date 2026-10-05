@@ -23,16 +23,26 @@ A Unity + C# 3D Android racing game project.
 
 ## Project Status
 
-🚧 Development started — V1 gameplay systems are being built.
+✅ Core gameplay, audio, 3D car visuals, bends/ramps, and Android optimization are implemented.
 
-## Important
+## Final Test Checklist
 
-This is an original game project. Game assets, branding, tracks, and gameplay elements will be developed independently.
+Before the final APK release, test the following in a real Android build:
 
+- Car acceleration and steering
+- Touch controls and sensitivity
+- Health and collision damage
+- Game Over flow
+- Start and finish flow
+- Audio playback
+- Bends and ramps
+- Coins and obstacles
+- HUD and restart flow
+- FPS stability and overheating
+- Landscape orientation
+- APK install and launch
 
-## V1 Core Scripts
-
-The first gameplay systems are now implemented:
+## Core Scripts
 
 - `CarController.cs` — forward movement and steering
 - `MobileInput.cs` — touch swipe steering with keyboard fallback
@@ -42,11 +52,14 @@ The first gameplay systems are now implemented:
 - `PlayerHealth.cs` — health and game-over trigger
 - `FinishLine.cs` — race completion trigger
 - `GameManager.cs` — coins, health, race state, restart
+- `AudioManager.cs` — engine and game audio
+- `CarVisualBuilder.cs` — procedural 3D car visuals
+- `TrackFeatureBuilder.cs` — generated bends, ramps, barriers, and road
+- `AndroidOptimization.cs` — mobile frame-rate, physics, and Android performance settings
 
-## Unity Setup Next
+## Unity Setup
 
 Create a Unity 3D project and place the scripts in `Assets/Scripts/`. Then create the Player, Track, Camera, Coins, Obstacles, Finish Line, and Game Manager objects and connect the script references in the Inspector.
-
 
 ## Build the V1 Race Scene
 
