@@ -13,6 +13,7 @@ public class CarController : MonoBehaviour
 
     private Rigidbody rb;
     private float currentSpeed;
+    private AudioManager audioManager;
 
     public float Speed01 => maxSpeed <= 0f ? 0f : Mathf.Clamp01(currentSpeed / maxSpeed);
     public float CurrentSpeed => currentSpeed;
@@ -23,6 +24,19 @@ public class CarController : MonoBehaviour
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.centerOfMass = new Vector3(0f, -0.45f, 0f);
         currentSpeed = 0f;
+        audioManager = AudioManager.GetOrCreate();
+    }
+
+    private void Update()
+    {
+        if (GameManager.Instance != null &&
+            (GameManager.Instance.IsGameOver || GameManager.Instance.RaceFinished || !GameManager.Instance.RaceStarted))
+        {
+            audioManager.StopEngine();
+            return;
+        }
+
+        audioManager.UpdateEngine(Speed01);
     }
 
     private void FixedUpdate()
