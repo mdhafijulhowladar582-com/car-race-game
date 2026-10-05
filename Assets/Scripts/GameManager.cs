@@ -1,60 +1,60 @@
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+[RequireComponent(typeof(Rigidbody))]
+public class CarController : MonoBehaviour
 {
-    public static GameManager Instance { get; private set; }
+    [SerializeField] private float minSpeed = 8f;
+    [SerializeField] private float maxSpeed = 18f;
+    [SerializeField] private float acceleration = 10f;
+    [SerializeField] private float braking = 18f;
+    [SerializeField] private float steeringStrength = 7f;
+    [SerializeField] private float turnAtSpeed = 65f;
+    [SerializeField] private float lateralGrip = 9f;
 
-    public int Coins { get; private set; }
-    public int Health { get; private set; } = 3;
-    public bool IsGameOver { get; private set; }
-    public bool RaceFinished { get; private set; }
+    private Rigidbody rb;
+    private float currentSpeed;
+
+    public float Speed01 => maxSpeed <= 0f ? 0f : Mathf.Clamp01(currentSpeed / maxSpeed);
+    public float CurrentSpeed => currentSpeed;
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
+        rb = GetComponent<Rigidbody>();
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
+        rb.centerOfMass = new Vector3(0f, -0.45f, 0f);
+        currentSpeed = minSpeed;
+    }
+
+    private void FixedUpdate()
+    {
+        if (GameManager.Instance != null && GameManager.Instance.IsGameOver)
         {
-            Destroy(gameObject);
+            rb.linearVelocity = Vector3.zero;
             return;
         }
 
-        Instance = this;
+        float steering = MobileInput.Steering;
+        currentSpeed = Mathf.MoveTowards(currentSpeed, maxSpeed, acceleration * Time.fixedDeltaTime);
+
+        Vector3 forwardVelocity = transform.forward * currentSpeed;
+        Vector3 velocity = rb.linearVelocity;
+        rb.linearVelocity = new Vector3(forwardVelocity.x, velocity.y, forwardVelocity.z);
+
+        float turnScale = Mathf.Lerp(0.65f, 1.15f, Speed01);
+        float turnAmount = steering * turnAtSpeed * turnScale * Time.fixedDeltaTime;
+        rb.MoveRotation(rb.rotation * Quaternion.Euler(0f, turnAmount, 0f));
+
+        Vector3 lateralVelocity = Vector3.Project(rb.linearVelocity, transform.right);
+        rb.linearVelocity -= lateralVelocity * steeringStrength * lateralGrip * 0.1f * Time.fixedDeltaTime;
     }
 
-    public void AddCoins(int amount)
+    public void SetMaxSpeed(float value)
     {
-        if (IsGameOver || RaceFinished)
-            return;
-
-        Coins += Mathf.Max(0, amount);
+        maxSpeed = Mathf.Max(minSpeed, value);
     }
 
-    public void UpdateHealth(int currentHealth)
+    public void SetAcceleration(float value)
     {
-        Health = Mathf.Max(0, currentHealth);
-    }
-
-    public void GameOver()
-    {
-        if (RaceFinished)
-            return;
-
-        IsGameOver = true;
-        Debug.Log("GAME OVER");
-    }
-
-    public void FinishRace()
-    {
-        if (IsGameOver)
-            return;
-
-        RaceFinished = true;
-        Debug.Log("RACE FINISHED");
-    }
-
-    public void RestartRace()
-    {
-        UnityEngine.SceneManagement.SceneManager.LoadScene(
-            UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex
-        );
+        acceleration = Mathf.Max(0f, value);
     }
 }
