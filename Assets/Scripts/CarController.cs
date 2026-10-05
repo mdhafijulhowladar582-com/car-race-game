@@ -29,6 +29,9 @@ public class CarController : MonoBehaviour
         if (GetComponent<CarVisualBuilder>() == null)
             gameObject.AddComponent<CarVisualBuilder>();
 
+        if (GetComponent<AndroidOptimization>() == null)
+            gameObject.AddComponent<AndroidOptimization>();
+
         if (GameObject.Find("GeneratedTrack") == null && GetComponent<TrackFeatureBuilder>() == null)
             gameObject.AddComponent<TrackFeatureBuilder>();
     }
