@@ -41,6 +41,9 @@ public class RaceHUD : MonoBehaviour
     {
         raceStarted = true;
 
+        if (GameManager.Instance != null)
+            GameManager.Instance.StartRace();
+
         if (startPanel != null)
             startPanel.SetActive(false);
     }
