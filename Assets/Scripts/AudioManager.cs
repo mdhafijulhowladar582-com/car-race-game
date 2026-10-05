@@ -8,6 +8,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private float engineVolume = 0.18f;
 
     private AudioSource engineSource;
+    private AudioSource oneShotSource;
     private AudioClip engineClip;
     private AudioClip coinClip;
     private AudioClip damageClip;
@@ -29,6 +30,10 @@ public class AudioManager : MonoBehaviour
         engineSource.playOnAwake = false;
         engineSource.spatialBlend = 0f;
         engineSource.volume = engineVolume * masterVolume;
+
+        oneShotSource = gameObject.AddComponent<AudioSource>();
+        oneShotSource.playOnAwake = false;
+        oneShotSource.spatialBlend = 0f;
 
         engineClip = CreateEngineClip();
         coinClip = CreateToneClip(880f, 0.12f, 0.25f);
@@ -93,10 +98,10 @@ public class AudioManager : MonoBehaviour
 
     private void PlayOneShot(AudioClip clip, float volume)
     {
-        if (clip == null)
+        if (clip == null || oneShotSource == null)
             return;
 
-        AudioSource.PlayClipAtPoint(clip, Vector3.zero, volume * masterVolume);
+        oneShotSource.PlayOneShot(clip, volume * masterVolume);
     }
 
     private AudioClip CreateEngineClip()
