@@ -46,3 +46,16 @@ The first gameplay systems are now implemented:
 ## Unity Setup Next
 
 Create a Unity 3D project and place the scripts in `Assets/Scripts/`. Then create the Player, Track, Camera, Coins, Obstacles, Finish Line, and Game Manager objects and connect the script references in the Inspector.
+
+
+## Build the V1 Race Scene
+
+After opening this project in Unity:
+
+1. Let Unity import the scripts.
+2. Open **Car Race > V1 > Build Race Scene** from the Unity Editor menu.
+3. Unity will generate the V1 race scene automatically.
+4. The scene will be saved as `Assets/Scenes/Race.unity`.
+5. Press Play to test the car, steering, coins, obstacles, health, and finish line.
+
+The builder creates the scene from Unity primitives, so no external 3D assets are required for the first prototype.
