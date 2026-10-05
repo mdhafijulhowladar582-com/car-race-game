@@ -18,6 +18,8 @@ public class PlayerHealth : MonoBehaviour
 
         CurrentHealth = Mathf.Max(0, CurrentHealth - damage);
 
+        AudioManager.GetOrCreate().PlayDamage();
+
         if (GameManager.Instance != null)
             GameManager.Instance.UpdateHealth(CurrentHealth);
 
