@@ -22,15 +22,18 @@ public class CarController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.centerOfMass = new Vector3(0f, -0.45f, 0f);
-        currentSpeed = minSpeed;
+        currentSpeed = 0f;
     }
 
     private void FixedUpdate()
     {
-        if (GameManager.Instance != null && GameManager.Instance.IsGameOver)
+        if (GameManager.Instance != null)
         {
-            rb.linearVelocity = Vector3.zero;
-            return;
+            if (GameManager.Instance.IsGameOver || GameManager.Instance.RaceFinished || !GameManager.Instance.RaceStarted)
+            {
+                StopCar();
+                return;
+            }
         }
 
         float steering = MobileInput.Steering;
@@ -46,6 +49,13 @@ public class CarController : MonoBehaviour
 
         Vector3 lateralVelocity = Vector3.Project(rb.linearVelocity, transform.right);
         rb.linearVelocity -= lateralVelocity * steeringStrength * lateralGrip * 0.1f * Time.fixedDeltaTime;
+    }
+
+    private void StopCar()
+    {
+        currentSpeed = 0f;
+        Vector3 velocity = rb.linearVelocity;
+        rb.linearVelocity = new Vector3(0f, velocity.y, 0f);
     }
 
     public void SetMaxSpeed(float value)
