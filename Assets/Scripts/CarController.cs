@@ -25,6 +25,9 @@ public class CarController : MonoBehaviour
         rb.centerOfMass = new Vector3(0f, -0.45f, 0f);
         currentSpeed = 0f;
         audioManager = AudioManager.GetOrCreate();
+
+        if (GetComponent<CarVisualBuilder>() == null)
+            gameObject.AddComponent<CarVisualBuilder>();
     }
 
     private void Update()
