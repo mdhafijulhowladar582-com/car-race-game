@@ -18,6 +18,7 @@ public class Coin : MonoBehaviour
         if (GameManager.Instance != null)
             GameManager.Instance.AddCoins(value);
 
+        AudioManager.GetOrCreate().PlayCoin();
         Destroy(gameObject);
     }
 }
