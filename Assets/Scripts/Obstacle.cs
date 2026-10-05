@@ -9,6 +9,8 @@ public class Obstacle : MonoBehaviour
         if (!collision.collider.CompareTag("Player"))
             return;
 
+        AudioManager.GetOrCreate().PlayCrash();
+
         PlayerHealth health = collision.collider.GetComponent<PlayerHealth>();
 
         if (health != null)
@@ -19,6 +21,8 @@ public class Obstacle : MonoBehaviour
     {
         if (!other.CompareTag("Player"))
             return;
+
+        AudioManager.GetOrCreate().PlayCrash();
 
         PlayerHealth health = other.GetComponent<PlayerHealth>();
 
