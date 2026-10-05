@@ -6,14 +6,12 @@ public class CarController : MonoBehaviour
     [SerializeField] private float minSpeed = 8f;
     [SerializeField] private float maxSpeed = 18f;
     [SerializeField] private float acceleration = 10f;
-    [SerializeField] private float braking = 18f;
     [SerializeField] private float steeringStrength = 7f;
     [SerializeField] private float turnAtSpeed = 65f;
     [SerializeField] private float lateralGrip = 9f;
 
     private Rigidbody rb;
     private float currentSpeed;
-    private AudioManager audioManager;
 
     public float Speed01 => maxSpeed <= 0f ? 0f : Mathf.Clamp01(currentSpeed / maxSpeed);
     public float CurrentSpeed => currentSpeed;
@@ -23,40 +21,16 @@ public class CarController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.centerOfMass = new Vector3(0f, -0.45f, 0f);
-        currentSpeed = 0f;
-        audioManager = AudioManager.GetOrCreate();
-
-        if (GetComponent<CarVisualBuilder>() == null)
-            gameObject.AddComponent<CarVisualBuilder>();
-
-        if (GetComponent<AndroidOptimization>() == null)
-            gameObject.AddComponent<AndroidOptimization>();
-
-        if (GameObject.Find("GeneratedTrack") == null && GetComponent<TrackFeatureBuilder>() == null)
-            gameObject.AddComponent<TrackFeatureBuilder>();
-    }
-
-    private void Update()
-    {
-        if (GameManager.Instance != null &&
-            (GameManager.Instance.IsGameOver || GameManager.Instance.RaceFinished || !GameManager.Instance.RaceStarted))
-        {
-            audioManager.StopEngine();
-            return;
-        }
-
-        audioManager.UpdateEngine(Speed01);
+        currentSpeed = minSpeed;
     }
 
     private void FixedUpdate()
     {
-        if (GameManager.Instance != null)
+        if (GameManager.Instance != null &&
+            (GameManager.Instance.IsGameOver || GameManager.Instance.RaceFinished || !GameManager.Instance.RaceStarted))
         {
-            if (GameManager.Instance.IsGameOver || GameManager.Instance.RaceFinished || !GameManager.Instance.RaceStarted)
-            {
-                StopCar();
-                return;
-            }
+            rb.linearVelocity = Vector3.zero;
+            return;
         }
 
         float steering = MobileInput.Steering;
@@ -72,13 +46,8 @@ public class CarController : MonoBehaviour
 
         Vector3 lateralVelocity = Vector3.Project(rb.linearVelocity, transform.right);
         rb.linearVelocity -= lateralVelocity * steeringStrength * lateralGrip * 0.1f * Time.fixedDeltaTime;
-    }
 
-    private void StopCar()
-    {
-        currentSpeed = 0f;
-        Vector3 velocity = rb.linearVelocity;
-        rb.linearVelocity = new Vector3(0f, velocity.y, 0f);
+        AudioManager.GetOrCreate().UpdateEngine(Speed01);
     }
 
     public void SetMaxSpeed(float value)
