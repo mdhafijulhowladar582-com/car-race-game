@@ -1,4 +1,4 @@
-name: Build Signed Android APK
+name: Build Android APK
 
 on:
   workflow_dispatch:
@@ -8,22 +8,13 @@ on:
 
 jobs:
   build-android:
-    name: Build Signed APK
+    name: Build Android APK
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           lfs: true
-
-      - name: Free disk space
-        uses: jlumbroso/free-disk-space@v2.0.1
-        with:
-          tool-cache: true
-          android: false
-          large-packages: false
-          docker-images: false
-          swap-storage: false
 
       - name: Cache Unity Library
         uses: actions/cache@v4
@@ -43,18 +34,12 @@ jobs:
           unityVersion: 6000.0.28f1
           targetPlatform: Android
           androidExportType: androidPackage
-          androidKeystoreName: car-race-game.keystore
-          androidKeystoreBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-          androidKeystorePass: ${{ secrets.ANDROID_KEYSTORE_PASS }}
-          androidKeyaliasName: ${{ secrets.ANDROID_KEYALIAS_NAME }}
-          androidKeyaliasPass: ${{ secrets.ANDROID_KEYALIAS_PASS }}
-          androidTargetSdkVersion: AndroidApiLevel35
           buildMethod: BuildAutomation.BuildAndroid
           versioning: Semantic
 
-      - name: Upload signed APK
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Car-Race-Game-Signed-APK
+          name: Car-Race-Game-APK
           path: build/Android/CarRaceGame.apk
           if-no-files-found: error
